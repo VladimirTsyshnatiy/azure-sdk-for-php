@@ -398,6 +398,44 @@ class ServicesBuilder
     }
     
     /**
+     * Builds a media services object.
+     *
+     * @param string $connectionString The configuration connection string.
+     * 
+     * @return WindowsAzure\MediaServices\Internal\IMediaServices
+     */
+    public function createMediaServicesService($connectionString)
+    {
+        $settings = ServiceManagementSettings::createFromConnectionString(
+            $connectionString
+        );
+        
+        $httpClient      = new HttpClient();
+        $serializer      = $this->serializer();
+        $uri             = Utilities::tryAddUrlScheme(
+            $settings->getEndpointUri(),
+            Resources::HTTPS_SCHEME
+        );
+        
+        $mediaServicesWrapper = new MediaServicesRestProxy(
+            $httpClient,
+            $settings->getAccountName(),
+            $uri,
+            $serializer
+        );
+
+        // Adding headers filter
+        $headers = array();
+        
+        $headers[Resources::X_MS_VERSION] = Resources::MEDIA_SERVICES_API_LATEST_VERSION;
+        
+        $headersFilter        = new HeadersFilter($headers);
+        $mediaServicesWrapper = $mediaServicesWrapper->withFilter($headersFilter);
+        
+        return $serviceManagementWrapper;
+    }
+    
+    /**
      * Gets the static instance of this class.
      * 
      * @return ServicesBuilder 

@@ -31,6 +31,7 @@ spl_autoload_register(
          $classes = array(
             'tests\\framework\\blobservicerestproxytestbase' => '/framework/BlobServiceRestProxyTestBase.php',
             'tests\\framework\\fiddlerfilter' => '/framework/FiddlerFilter.php',
+            'tests\\framework\\mediaservicesrestproxytestbase' => '/framework/MediaServicesRestProxyTestBase.php',
             'tests\\framework\\queueservicerestproxytestbase' => '/framework/QueueServiceRestProxyTestBase.php',
             'tests\\framework\\restproxytestbase' => '/framework/RestProxyTestBase.php',
             'tests\\framework\\servicebusrestproxytestbase' => '/framework/ServiceBusRestProxyTestBase.php',
@@ -173,6 +174,7 @@ spl_autoload_register(
             'tests\\unit\\windowsazure\\common\\serviceexceptiontest' => '/unit/WindowsAzure/Common/ServiceExceptionTest.php',
             'tests\\unit\\windowsazure\\common\\servicesbuildertest' => '/unit/WindowsAzure/Common/ServicesBuilderTest.php',
             'tests\\unit\\windowsazure\\createserviceoptionsmanagement\\models\\createserviceoptionstest' => '/unit/WindowsAzure/ServiceManagement/Models/CreateStorageServiceOptionsTest.php',
+            'tests\\unit\\windowsazure\\mediaservices\\mediaservicesproxytest' => '/unit/WindowsAzure/MediaServices/MediaServicesRestProxyTest.php',
             'tests\\unit\\windowsazure\\queue\\models\\createmessageoptionstest' => '/unit/WindowsAzure/Queue/Models/CreateMessageOptionsTest.php',
             'tests\\unit\\windowsazure\\queue\\models\\createqueueoptionstest' => '/unit/WindowsAzure/Queue/Models/CreateQueueOptionsTest.php',
             'tests\\unit\\windowsazure\\queue\\models\\getqueuemetadataresulttest' => '/unit/WindowsAzure/Queue/Models/GetQueueMetadataResultTest.php',

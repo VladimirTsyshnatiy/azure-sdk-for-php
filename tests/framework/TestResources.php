@@ -154,7 +154,18 @@ class TestResources
         
         return $name;
     }
-
+    
+    public static function getMediaServicesConnectionString()
+    {
+    	$connectionString = getenv('AZURE_MEDIA_SERVICES_CONNECTION_STRING');
+    
+    	if (empty($connectionString)) {
+    		throw new \Exception('AZURE_MEDIA_SERVICES_CONNECTION_STRING enviroment variable is missing.');
+    	}
+    
+    	return $connectionString;
+    }
+    
     public static function getServicePropertiesSample()
     {
         $sample = array();

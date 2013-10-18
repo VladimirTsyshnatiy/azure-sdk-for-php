@@ -62,7 +62,11 @@ class Resources
     const SHARED_SECRET_ISSUER_NAME = 'SharedSecretIssuer';
     const SHARED_SECRET_VALUE_NAME = 'SharedSecretValue';
     const STS_ENDPOINT_NAME = 'StsEndpoint';
-    
+    const MEDIA_SERVICES_ENDPOINT_URI_NAME = 'MediaServicesEndpoint';
+    const MEDIA_SERVICES_ACCOUNT_NAME = 'AccountName';
+    const MEDIA_SERVICES_PRIMARY_ACCESS_KEY = 'PrimaryAccessKey';
+    const MEDIA_SERVICES_SECONDARY_ACCESS_KEY = 'SecondaryAccessKey';
+        
     // Messages
     const INVALID_TYPE_MSG = 'The provided variable should be of type: ';
     const INVALID_META_MSG = 'Metadata cannot contain newline characters.';
@@ -225,15 +229,16 @@ class Resources
     
 
     // Header values
-    const STORAGE_API_LATEST_VERSION     = '2011-08-18';
-    const SM_API_LATEST_VERSION          = '2011-10-01';
-    const DATA_SERVICE_VERSION_VALUE     = '1.0;NetFx';
-    const MAX_DATA_SERVICE_VERSION_VALUE = '2.0;NetFx';
-    const ACCEPT_HEADER_VALUE            = 'application/atom+xml,application/xml';
-    const ATOM_ENTRY_CONTENT_TYPE        = 'application/atom+xml;type=entry;charset=utf-8';
-    const ACCEPT_CHARSET_VALUE           = 'utf-8';
-    const INT32_MAX                      = 2147483647;
-
+    const STORAGE_API_LATEST_VERSION        = '2011-08-18';
+    const SM_API_LATEST_VERSION             = '2011-10-01';
+    const DATA_SERVICE_VERSION_VALUE        = '1.0;NetFx';
+    const MAX_DATA_SERVICE_VERSION_VALUE    = '2.0;NetFx';
+    const ACCEPT_HEADER_VALUE               = 'application/atom+xml,application/xml';
+    const ATOM_ENTRY_CONTENT_TYPE           = 'application/atom+xml;type=entry;charset=utf-8';
+    const ACCEPT_CHARSET_VALUE              = 'utf-8';
+    const INT32_MAX                         = 2147483647;
+    const MEDIA_SERVICES_API_LATEST_VERSION = '2.2';
+    
     // Query parameter names
     const QP_PREFIX             = 'Prefix';
     const QP_MAX_RESULTS        = 'MaxResults';
@@ -415,6 +420,9 @@ class Resources
     const SSL_LOCAL_CERT  = 'ssl_local_cert';
     const SSL_CAFILE      = 'ssl_cafile';
     const CONNECT_TIMEOUT = 'connect_timeout';
+    
+    // Media services
+    const MEDIA_SERVICES_URL = 'https://media.windows.net';
     
     // @codingStandardsIgnoreEnd
 }
