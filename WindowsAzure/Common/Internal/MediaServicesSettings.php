@@ -38,7 +38,7 @@ use WindowsAzure\Common\Internal\Resources;
  * @version   Release: 0.3.1_2011-08
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
-class ServiceManagementSettings extends ServiceSettings
+class MediaServicesSettings extends ServiceSettings
 {
     /**
      * @var string
@@ -48,17 +48,17 @@ class ServiceManagementSettings extends ServiceSettings
     /**
      * @var string
      */
-    private $_primaryAccessKey;
-    
-    /**
-     * @var string
-     */
-    private $_secondaryAccessKey;
+    private $_accessKey;
     
     /**
      * @var string
      */
     private $_endpointUri;
+
+    /**
+     * @var string
+     */
+    private $_oauthEndpointUri;
     
     /**
      * Validator for the MediaServicesAccountName setting. It has to be provided.
@@ -68,18 +68,11 @@ class ServiceManagementSettings extends ServiceSettings
     private static $_accountNameSetting;
     
     /**
-     * Validator for the MediaServicesPrimaryAccessKey setting. It has to be provided.
+     * Validator for the MediaServicesAccessKey setting. It has to be provided.
      * 
      * @var array
      */
-    private static $_primaryAccessKeySetting;
-    
-    /**
-     * Validator for the MediaServicesSecondaryAccessKey setting. It has to be provided.
-     * 
-     * @var array
-     */
-    private static $_secondaryAccessKeySetting;
+    private static $_accessKeySetting;
     
     /**
      * Validator for the MediaServicesEndpoint setting. Must be a valid Uri.
@@ -87,6 +80,13 @@ class ServiceManagementSettings extends ServiceSettings
      * @var array
      */
     private static $_endpointUriSetting;
+    
+    /**
+     * Validator for the MediaServicesOAuthEndpoint setting. Must be a valid Uri.
+     * 
+     * @var array
+     */
+    private static $_oauthEndpointUriSetting;
     
     /**
      * @var boolean
@@ -112,22 +112,23 @@ class ServiceManagementSettings extends ServiceSettings
             Validate::getIsValidUri()
         );
         
+        self::$_oauthEndpointUriSetting = self::settingWithFunc(
+            Resources::MEDIA_SERVICES_OAUTH_ENDPOINT_URI_NAME,
+            Validate::getIsValidUri()
+        );
+        
         self::$_accountNameSetting = self::setting(
             Resources::MEDIA_SERVICES_ACCOUNT_NAME
         );
         
-        self::$_primaryAccessKeySetting = self::setting(
-            Resources::MEDIA_SERVICES_PRIMARY_ACCESS_KEY
-        );
-        
-        self::$_secondaryAccessKeySetting = self::setting(
-            Resources::MEDIA_SERVICES_SECONDARY_ACCESS_KEY
+        self::$_accessKeySetting = self::setting(
+            Resources::MEDIA_SERVICES_ACCESS_KEY
         );
         
         self::$validSettingKeys[] = Resources::MEDIA_SERVICES_ENDPOINT_URI_NAME;
+        self::$validSettingKeys[] = Resources::MEDIA_SERVICES_OAUTH_ENDPOINT_URI_NAME;
         self::$validSettingKeys[] = Resources::MEDIA_SERVICES_ACCOUNT_NAME;
-        self::$validSettingKeys[] = Resources::MEDIA_SERVICES_PRIMARY_ACCESS_KEY;
-        self::$validSettingKeys[] = Resources::MEDIA_SERVICES_SECONDARY_ACCESS_KEY;
+        self::$validSettingKeys[] = Resources::MEDIA_SERVICES_ACCESS_KEY;
     }
     
     /**
@@ -138,12 +139,12 @@ class ServiceManagementSettings extends ServiceSettings
      * @param string $secondaryAccessKey  The user provided secondary access key 
      * @param string $endpointUri         The service management endpoint uri.
      */
-    public function __construct($accountName, $primaryAccessKey, $secondaryAccessKey, $endpointUri)
+    public function __construct($accountName, $accessKey, $endpointUri, $oauthEndpointUri)
     {
         $this->_accountName = $accountName;
-        $this->_primaryAccessKey = $primaryAccessKey;
-        $this->_secondaryAccessKey  = $secondaryAccessKey;
+        $this->_accessKey = $accessKey;
         $this->_endpointUri  = $endpointUri;
+        $this->_oauthEndpointUri  = $oauthEndpointUri;
     }
     
     /**
@@ -161,37 +162,37 @@ class ServiceManagementSettings extends ServiceSettings
             $tokenizedSettings,
             self::allRequired(
                 self::$_accountNameSetting,
-                self::$_primaryAccessKeySetting,
-            	self::$_secondaryAccessKeySetting
+                self::$_accessKeySetting
             ),
             self::optional(
-                self::$_endpointUriSetting
-            )
+                self::$_endpointUriSetting,
+                self::$_oauthEndpointUriSetting
+    		)
         );
         if ($matchedSpecs) {
-            $endpointUri     = Utilities::tryGetValueInsensitive(
+            $endpointUri = Utilities::tryGetValueInsensitive(
                 Resources::MEDIA_SERVICES_ENDPOINT_URI_NAME,
                 $tokenizedSettings,
                 Resources::MEDIA_SERVICES_URL
             );
-            $accountName  = Utilities::tryGetValueInsensitive(
+            $oauthEndpointUri = Utilities::tryGetValueInsensitive(
+                Resources::MEDIA_SERVICES_OAUTH_ENDPOINT_URI_NAME,
+                $tokenizedSettings,
+                Resources::MEDIA_SERVICES_OAUTH_URL
+            );
+            $accountName = Utilities::tryGetValueInsensitive(
                 Resources::MEDIA_SERVICES_ACCOUNT_NAME,
                 $tokenizedSettings
             );
-            $primaryAccessKey = Utilities::tryGetValueInsensitive(
-                Resources::MEDIA_SERVICES_PRIMARY_ACCESS_KEY,
+            $accessKey = Utilities::tryGetValueInsensitive(
+                Resources::MEDIA_SERVICES_ACCESS_KEY,
                 $tokenizedSettings
             );
-            $secondaryAccessKey = Utilities::tryGetValueInsensitive(
-           		Resources::MEDIA_SERVICES_SECONDARY_ACCESS_KEY,
-           		$tokenizedSettings
-            );
-            
             return new MediaServicesSettings(
                 $accountName,
-                $primaryAccessKey,
-                $secondaryAccessKey,
-            	$endpointUri
+                $accessKey,
+            	$endpointUri,
+            	$oauthEndpointUri
             );
         }
         
@@ -209,23 +210,13 @@ class ServiceManagementSettings extends ServiceSettings
     }
     
     /**
-     * Gets media services primary access key.
+     * Gets media services access key.
      * 
      * @return string
      */
-    public function getPrimaryAccessKey()
+    public function getAccessKey()
     {
-        return $this->_primaryAccessKey;
-    }
-    
-    /**
-     * Gets media services secondary access key.
-     * 
-     * @return string
-     */
-    public function getSecondaryAccessKey()
-    {
-        return $this->_secondaryAccessKey;
+        return $this->_accessKey;
     }
     
     /**
@@ -236,6 +227,16 @@ class ServiceManagementSettings extends ServiceSettings
     public function getEndpointUri()
     {
         return $this->_endpointUri;
+    }
+
+    /**
+     * Gets media services OAuth endpoint uri.
+     * 
+     * @return string 
+     */
+    public function getOAuthEndpointUri()
+    {
+        return $this->_oauthEndpointUri;
     }
 }
 

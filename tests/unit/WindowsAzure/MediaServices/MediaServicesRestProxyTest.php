@@ -26,10 +26,6 @@ namespace Tests\Unit\WindowsAzure\MediaServices;
 use Tests\Framework\VirtualFileSystem;
 use Tests\Framework\MediaServicesRestProxyTestBase;
 use Tests\Framework\TestResources;
-use WindowsAzure\Common\Internal\Resources;
-use WindowsAzure\Common\Internal\Utilities;
-use WindowsAzure\Common\ServiceException;
-use WindowsAzure\Common\Models\ServiceProperties;
 
 /**
  * Unit tests for class MediaServcesRestProxy
@@ -45,13 +41,15 @@ use WindowsAzure\Common\Models\ServiceProperties;
 class MediaServicesProxyTest extends MediaServicesRestProxyTestBase
 {
     /**
-    * @covers WindowsAzure\MediaServces\MediaServcesRestProxy::getServiceProperties
+    * @covers WindowsAzure\MediaServces\MediaServcesRestProxy::fooConnaction
+	* @todo delete after scenario 1 checked
     */
-    public function testConnection()
+    public function testFooConnection()
     {
         $this->skipIfEmulated();
         
-        // Just empty test for now
+        $response = $this->restProxy->fooConnection();
         
+        $this->assertNotNull($response);
     }    
 }

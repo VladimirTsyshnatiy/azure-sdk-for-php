@@ -39,6 +39,7 @@ use WindowsAzure\Common\Internal\Authentication\TableSharedKeyLiteAuthScheme;
 use WindowsAzure\Common\Internal\StorageServiceSettings;
 use WindowsAzure\Common\Internal\ServiceManagementSettings;
 use WindowsAzure\Common\Internal\ServiceBusSettings;
+use WindowsAzure\Common\Internal\MediaServicesSettings;
 use WindowsAzure\Queue\QueueRestProxy;
 use WindowsAzure\ServiceBus\ServiceBusRestProxy;
 use WindowsAzure\ServiceBus\Internal\WrapRestProxy;
@@ -46,6 +47,9 @@ use WindowsAzure\ServiceManagement\ServiceManagementRestProxy;
 use WindowsAzure\Table\TableRestProxy;
 use WindowsAzure\Table\Internal\AtomReaderWriter;
 use WindowsAzure\Table\Internal\MimeReaderWriter;
+use WindowsAzure\MediaServices\MediaServicesRestProxy;
+use WindowsAzure\Common\Internal\OAuthRestProxy;
+use WindowsAzure\Common\Internal\Authentication\OAuthScheme;
 
 
 /**
@@ -406,7 +410,7 @@ class ServicesBuilder
      */
     public function createMediaServicesService($connectionString)
     {
-        $settings = ServiceManagementSettings::createFromConnectionString(
+        $settings = MediaServicesSettings::createFromConnectionString(
             $connectionString
         );
         
@@ -419,20 +423,30 @@ class ServicesBuilder
         
         $mediaServicesWrapper = new MediaServicesRestProxy(
             $httpClient,
-            $settings->getAccountName(),
             $uri,
-            $serializer
+            $settings->getAccountName(),
+        	$serializer
         );
 
         // Adding headers filter
         $headers = array();
-        
         $headers[Resources::X_MS_VERSION] = Resources::MEDIA_SERVICES_API_LATEST_VERSION;
-        
         $headersFilter        = new HeadersFilter($headers);
         $mediaServicesWrapper = $mediaServicesWrapper->withFilter($headersFilter);
         
-        return $serviceManagementWrapper;
+        // Adding OAuth filter
+        $oauthService 			= new OAuthRestProxy(new HttpClient(), $settings->getOAuthEndpointUri());
+        $authentification 		= new OAuthScheme(
+        	$settings->getAccountName(), 
+        	$settings->getAccessKey(), 
+        	Resources::OAUTH_GT_CLIENT_CREDENTIALS, 
+        	Resources::MEDIA_SERVICES_OAUTH_SCOPE, 
+        	$oauthService
+        );
+        $authentificationFilter	= new AuthenticationFilter($authentification);
+        $mediaServicesWrapper 	= $mediaServicesWrapper->withFilter($authentificationFilter);
+        
+        return $mediaServicesWrapper;
     }
     
     /**
